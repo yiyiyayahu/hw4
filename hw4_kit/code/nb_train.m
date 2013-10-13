@@ -25,4 +25,4 @@ nb.mu_x_given_y(:,2) = sum(X(Y == 1,:)) / length(find(Y==1));
 
 sum1 = sum(bsxfun(@minus, X(Y == 0,:), nb.mu_x_given_y(:,1)').^2);
 sum2 = sum(bsxfun(@minus, X(Y == 1,:), nb.mu_x_given_y(:,2)').^2);
-nb.sigma_x = ((sum1 + sum2) / length(X) + eps)';
+nb.sigma_x = sqrt (((sum1 + sum2) / length(X) + eps)');
