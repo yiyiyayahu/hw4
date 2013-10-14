@@ -63,3 +63,9 @@ while(round_T < opts.max_iter)
    end   
 end
 end
+
+function [log_y_given_x] = findCond(X,Y,w)
+    o = exp(-bsxfun(@times,Y,X) * w');
+    o_exp = min(o, realmax * ones(size(o)));
+    log_y_given_x = sum(-sum(log(ones(size(o_exp)) + o_exp),2),1);
+end
