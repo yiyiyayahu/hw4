@@ -52,14 +52,14 @@ Y(Y==0) = -1;
 
 % YOUR CODE GOES HERE
 round_T = 0;
-gradnorm = norm(lr_gradient(X, Y, w, C)) / size(X,1);
-lg = [];
-while(round_T < opts.max_iter && gradnorm >= opts.stop_tol)
-    delta_w = lr_gradient(X, Y, w, C);
-    w = w + opts.step_size * delta_w;
-    gradnorm = norm(lr_gradient(X, Y, w, C)) / size(X,1);
-    lg = [lg  findCond(X,Y,w)];
-    round_T = round_T + 1;
+obj = [];
+while(round_T < opts.max_iter)
+   round_T = round_T + 1;  
+   obj = [obj  findCond(X,Y,w)];  
+   gradnorm = norm(lr_gradient(X, Y, w, C),2) / size(X,1);
+   w = w + opts.step_size * lr_gradient(X, Y, w, C);   
+   if gradnorm < opts.stop_tol
+       break
+   end   
 end
-obj = lg(:,end);
 end
