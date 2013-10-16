@@ -88,6 +88,6 @@ legend('blue: Naive Bayes', 'red: Logistic Regression');
 print -djpeg -r72 learning_curves.jpg;
 hold off;
 % 
-% answers{1} = ''; 
-% 
-% save('answers_2.mat', 'answers');
+answers{1} = 'From the plot, we can see that NB converge to peak test set performance faster. LR works better with the most data.'; 
+
+save('answers_2.mat', 'answers');
