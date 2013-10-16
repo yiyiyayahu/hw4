@@ -15,13 +15,9 @@ function [grad] = lr_gradient(X, Y, w, C)
 
 % YOUR CODE GOES HERE
 grad_l = [];
-for i = 1 : size(X,1)
-    grad_exp = exp(-Y(i) * w * X(i,:)');
-    if grad_exp == Inf
-        grad_exp = realmax;
-    end
-    m = Y(i) * X(i,:) .* grad_exp ./(1 + grad_exp);
-    grad_l = [grad_l ; m];
-end
+grad_exp = exp(-Y.*(X*w'));
+grad_exp(grad_exp == Inf) = realmax;
+nom = bsxfun(@times,bsxfun(@times,X,Y),grad_exp);
+grad_l = bsxfun(@times,nom,(1+grad_exp).^-1);
 grad = sum(grad_l,1) - C * w;
 grad(grad == Inf) = realmax;
