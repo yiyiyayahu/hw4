@@ -56,16 +56,20 @@ obj = [];
 while(round_T < opts.max_iter)
    round_T = round_T + 1;  
    obj = [obj  findCond(X,Y,w)];  
-   gradnorm = norm(lr_gradient(X, Y, w, C),2) / size(X,1);
-   w = w + opts.step_size * lr_gradient(X, Y, w, C);   
+   gradnorm = norm(lr_gradient(X, Y, w, C)) / size(X,1);
+   w = w + opts.step_size * lr_gradient(X, Y, w, C); 
+   w(w == Inf) = realmax;
+   w(w == -Inf) = -realmax;
    if gradnorm < opts.stop_tol
        break
    end   
 end
 end
 
-function [log_y_given_x] = findCond(X,Y,w)
-    o = exp(-bsxfun(@times,Y,X) * w');
-    o_exp = min(o, realmax * ones(size(o)));
-    log_y_given_x = sum(-sum(log(ones(size(o_exp)) + o_exp),2),1);
+
+
+function [lgyx] = findCond(X,Y,w)
+    o_exp = exp(-Y.*(X * w'));
+    o_exp(o_exp == Inf) = realmax;
+    lgyx = -sum(log(ones(size(o_exp)) + o_exp),1);   
 end
