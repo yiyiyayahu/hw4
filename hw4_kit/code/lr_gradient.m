@@ -14,14 +14,14 @@ function [grad] = lr_gradient(X, Y, w, C)
 %   LR_TRAIN, LR_TEST
 
 % YOUR CODE GOES HERE
-
-%grad_l_exp = min(realmax, exp(-bsxfun(@times, Y, bsxfun(@times,w,X))));
-%grad_l_nom = bsxfun(@times, bsxfun(@times,Y,X),grad_l_exp);
-%grad_l = sum(grad_l_nom ./ (ones(size(grad_l_exp)) + grad_l_exp),1);
 grad_l = [];
 for i = 1 : size(X,1)
-    grad_exp = min(realmax, exp(-Y(i) * w * X(i,:)'));
-    m = Y(i) * X(i,:) .* grad_exp /(1 + grad_exp);
+    grad_exp = exp(-Y(i) * w * X(i,:)');
+    if grad_exp == Inf
+        grad_exp = realmax;
+    end
+    m = Y(i) * X(i,:) .* grad_exp ./(1 + grad_exp);
     grad_l = [grad_l ; m];
 end
 grad = sum(grad_l,1) - C * w;
+grad(grad == Inf) = realmax;
