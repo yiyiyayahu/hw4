@@ -39,17 +39,54 @@ answers{2} = '';
 save('answers_1.mat', 'answers');
 
 % %% Part II - Learning Curves
-% clear answers
-% 
-% % For this section, generate the learning curves. Make sure to plot
-% % errorbars.
-% 
-% % YOUR CODE GOES HERE
+clear answers
 
-% 
-% 
-% % Save with:
-% print -djpeg -r72 learning_curves.jpg
+% For this section, generate the learning curves. Make sure to plot
+% errorbars.
+
+% YOUR CODE GOES HERE
+nb_test_err = zeros(1,8);
+nb_test = zeros(100,8);
+
+lr_test_err = zeros(1,8);
+lr_test = zeros(100,8);
+%(a) Randomly separate the dataset into 80% training, 20% test
+
+for i = 1 : 100
+    part = (mod(randperm(length(Y)), 5) + 1)';
+    train_x = X(part < 5,:);
+    train_y = Y(part < 5,:);
+    test_x = X(part == 5,:);
+    test_y = Y(part == 5,:);
+
+    %(b) Further subdivide the training set into 8 partitions
+    partition =  (mod(randperm(length(train_x)), 8) + 1)';
+   
+    for j = 1 : 8      
+        
+        nb_test_err(:,j) = nb_learning(partition, j, X, Y, test_x, test_y);       
+        lr_test_err(:,j) = lr_learning(partition, j, X, Y, test_x, test_y);
+    end
+    
+    nb_test(i,:) = nb_test_err;
+    lr_test(i,:) = lr_test_err;
+end
+nb_test_err_final = mean(nb_test);
+nb_test_std_final = std(nb_test);
+lr_test_err_final = mean(lr_test);
+lr_test_std_final = std(lr_test);
+% plot
+axis_x = 1 : 8;
+errorbar(axis_x, nb_test_err_final, nb_test_std_final, 'b');
+xlabel('Datapoints');
+ylabel('Test Error');
+title('Learning curves');
+hold on;
+errorbar(axis_x, lr_test_err_final, lr_test_std_final, 'r');
+
+legend('blue: Naive Bayes', 'red: Logistic Regression');
+print -djpeg -r72 learning_curves.jpg;
+hold off;
 % 
 % answers{1} = ''; 
 % 
